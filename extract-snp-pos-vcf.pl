@@ -8,14 +8,19 @@ use strict;
 use warnings;
 use autodie;
 use feature 'say';
+use Array::Utils 'array_minus';
 
 my %snps;
+my @parents = qw( M82 PEN );
 
 open my $snp_fh, "<", "snp_master/polyDB.SL2.40ch01.nr";
 <$snp_fh>;
 while (<$snp_fh>) {
-    my ( $chr, $pos ) = split;
-    $snps{$chr}{$pos} = 1;
+    my ( $chr, $pos, $ref, $alt, $alt_gt ) = split;
+    my @alt_gt_ary = ($alt_gt);
+    my ($ref_gt) = array_minus @parents, @alt_gt_ary;
+    $snps{$chr}{$pos}{$ref} = $ref_gt;
+    $snps{$chr}{$pos}{$alt} = $alt_gt;
 }
 close $snp_fh;
 
