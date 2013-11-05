@@ -19,6 +19,7 @@ while (<$snp_fh>) {
 }
 close $snp_fh;
 
+my $ncol;
 
 open my $vcf_fh, "<", "2013-11-05/BIL.1000.vcf";#"BIL.01.vcf";
 open my $out_fh, ">", "2013-11-05/out.vcf";#"out.vcf";
@@ -26,10 +27,17 @@ while (<$vcf_fh>) {
     next if /^##/;
     if (/^#/) {
         $_ =~ s|../bam/(BIL_\d+)_Slc.sorted.bam|$1|g;
+        $ncol = scalar split;
         print $out_fh $_;
         next;
     }
-    my ( $chr, $pos ) = split;
+    my ( $chr, $pos, $ref, $alt, @samples ) =
+      (split)[ 0 .. 1, 3 .. 4, 9 .. $ncol - 1 ];
+
+    for my $sample (@samples) {
+        my ( $gt, $pl, $dp, $gq ) = split /:/, $sample;
+    }
+
     print $out_fh $_ if exists $snps{$chr}{$pos};
 }
 close $out_fh;
