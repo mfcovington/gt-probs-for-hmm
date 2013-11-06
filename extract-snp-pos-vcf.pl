@@ -11,7 +11,7 @@ use feature 'say';
 use Array::Utils 'array_minus';
 use List::Util 'sum';
 
-my $min_cov = 0;
+my $min_cov = 1;
 my $min_gq  = 0;
 
 my %snps;
