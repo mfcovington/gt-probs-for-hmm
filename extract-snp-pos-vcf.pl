@@ -11,6 +11,8 @@ use feature 'say';
 use Array::Utils 'array_minus';
 use List::Util 'sum';
 
+my ( $vcf_file, $out_file, @snp_files) = @ARGV;
+
 my $min_cov = 1;
 my $min_gq  = 0;
 
@@ -19,21 +21,23 @@ my $par1 = 'M82';
 my $par2 = 'PEN';
 my @parents = ( $par1, $par2 );
 
-open my $snp_fh, "<", "snp_master/polyDB.SL2.40ch01.nr";
-<$snp_fh>;
-while (<$snp_fh>) {
-    my ( $chr, $pos, $ref, $alt, $alt_gt ) = split;
-    my @alt_gt_ary = ($alt_gt);
-    my ($ref_gt) = array_minus @parents, @alt_gt_ary;
-    $snps{$chr}{$pos}{$ref} = $ref_gt;
-    $snps{$chr}{$pos}{$alt} = $alt_gt;
+for my $file (@snp_files) {
+    open my $snp_fh, "<", $file;
+    <$snp_fh>;
+    while (<$snp_fh>) {
+        my ( $chr, $pos, $ref, $alt, $alt_gt ) = split;
+        my @alt_gt_ary = ($alt_gt);
+        my ($ref_gt) = array_minus @parents, @alt_gt_ary;
+        $snps{$chr}{$pos}{$ref} = $ref_gt;
+        $snps{$chr}{$pos}{$alt} = $alt_gt;
+    }
+    close $snp_fh;
 }
-close $snp_fh;
 
 my $ncol;
 
-open my $vcf_fh, "<", "2013-11-05/BIL.1000.vcf";#"BIL.01.vcf";
-open my $out_fh, ">", "2013-11-05/gt.probs";#"out.vcf";
+open my $vcf_fh, "<", $vcf_file; # "2013-11-05/BIL.1000.vcf";#"BIL.01.vcf";
+open my $out_fh, ">", $out_file; # "2013-11-05/gt.probs";#"out.vcf";
 while (<$vcf_fh>) {
     next if /^##/;
     if (/^#/) {
