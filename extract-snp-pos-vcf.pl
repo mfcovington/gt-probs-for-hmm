@@ -10,6 +10,9 @@ use autodie;
 use feature 'say';
 use Array::Utils 'array_minus';
 
+my $min_cov = 0;
+my $min_gq  = 0;
+
 my %snps;
 my @parents = qw( M82 PEN );
 
@@ -43,8 +46,15 @@ while (<$vcf_fh>) {
 
       # TODO: next if multiple alts
 
+    my @processed;
     for my $sample (@samples) {
         my ( $gt, $pl, $dp, $gq ) = split /:/, $sample;
+
+        if ( $dp < $min_cov || $gq < $min_gq ) {
+            push @processed, "NA,NA,NA";
+            next;
+        }
+
     }
 
     print $out_fh $_ if exists $snps{$chr}{$pos};
