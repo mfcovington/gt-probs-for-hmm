@@ -11,14 +11,14 @@ use feature 'say';
 use Array::Utils 'array_minus';
 use List::Util 'sum';
 
-my ( $vcf_file, $out_file, @snp_files) = @ARGV;
+my ( $vcf_file, $out_file, @snp_files ) = @ARGV;
 
 my $min_cov = 1;
 my $min_gq  = 0;
 
 my %snps;
-my $par1 = 'M82';
-my $par2 = 'PEN';
+my $par1    = 'M82';
+my $par2    = 'PEN';
 my @parents = ( $par1, $par2 );
 
 for my $file (@snp_files) {
@@ -36,8 +36,8 @@ for my $file (@snp_files) {
 
 my $ncol;
 
-open my $vcf_fh, "<", $vcf_file; # "2013-11-05/BIL.1000.vcf";#"BIL.01.vcf";
-open my $out_fh, ">", $out_file; # "2013-11-05/gt.probs";#"out.vcf";
+open my $vcf_fh, "<", $vcf_file;
+open my $out_fh, ">", $out_file;
 while (<$vcf_fh>) {
     next if /^##/;
     if (/^#/) {
@@ -51,9 +51,8 @@ while (<$vcf_fh>) {
     my ( $chr, $pos, $ref, $alt, @samples ) =
       (split)[ 0 .. 1, 3 .. 4, 9 .. $ncol - 1 ];
 
+    # TODO: next if multiple alts
     next unless exists $snps{$chr}{$pos};
-
-      # TODO: next if multiple alts
 
     my @processed;
     for my $sample (@samples) {
