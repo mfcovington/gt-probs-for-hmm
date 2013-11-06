@@ -15,7 +15,9 @@ my $min_cov = 0;
 my $min_gq  = 0;
 
 my %snps;
-my @parents = qw( M82 PEN );
+my $par1 = 'M82';
+my $par2 = 'PEN';
+my @parents = ( $par1, $par2 );
 
 open my $snp_fh, "<", "snp_master/polyDB.SL2.40ch01.nr";
 <$snp_fh>;
@@ -61,6 +63,7 @@ while (<$vcf_fh>) {
         my $sum_lhs = sum @likelihoods;
 
         my @gt_probs = map { $_ / $sum_lhs } @likelihoods;
+        @gt_probs = reverse @gt_probs if $snps{$chr}{$pos}{$alt} eq $par1;
         push @processed, join ",", @gt_probs;
     }
 
