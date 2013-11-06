@@ -33,7 +33,7 @@ close $snp_fh;
 my $ncol;
 
 open my $vcf_fh, "<", "2013-11-05/BIL.1000.vcf";#"BIL.01.vcf";
-open my $out_fh, ">", "2013-11-05/out.vcf";#"out.vcf";
+open my $out_fh, ">", "2013-11-05/gt.probs";#"out.vcf";
 while (<$vcf_fh>) {
     next if /^##/;
     if (/^#/) {
@@ -67,7 +67,7 @@ while (<$vcf_fh>) {
         push @processed, join ",", @gt_probs;
     }
 
-    print $out_fh $_ if exists $snps{$chr}{$pos};
+    say $out_fh join "\t", $chr, $pos, @processed;
 }
 close $out_fh;
 close $vcf_fh;
