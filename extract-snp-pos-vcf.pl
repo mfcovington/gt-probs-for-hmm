@@ -51,8 +51,10 @@ while (<$vcf_fh>) {
     my ( $chr, $pos, $ref, $alt, @samples ) =
       (split)[ 0 .. 1, 3 .. 4, 9 .. $ncol - 1 ];
 
-    # TODO: next if multiple alts
     next unless exists $snps{$chr}{$pos};
+
+    # Skip INDELS and multiple alts
+    next unless length "$ref$alt" == 2;
 
     my @processed;
     for my $sample (@samples) {
