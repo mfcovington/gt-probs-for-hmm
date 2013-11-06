@@ -56,6 +56,9 @@ while (<$vcf_fh>) {
     # Skip INDELS and multiple alts
     next unless length "$ref$alt" == 2;
 
+    # Skip if primary alt allele in VCF file differs from alt allele in SNP file
+    next unless exists $snps{$chr}{$pos}{$alt};
+
     my @processed;
     for my $sample (@samples) {
         my ( $gt, $pl, $dp, $gq ) = split /:/, $sample;
