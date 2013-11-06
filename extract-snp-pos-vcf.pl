@@ -39,6 +39,10 @@ while (<$vcf_fh>) {
     my ( $chr, $pos, $ref, $alt, @samples ) =
       (split)[ 0 .. 1, 3 .. 4, 9 .. $ncol - 1 ];
 
+    next unless exists $snps{$chr}{$pos};
+
+      # TODO: next if multiple alts
+
     for my $sample (@samples) {
         my ( $gt, $pl, $dp, $gq ) = split /:/, $sample;
     }
