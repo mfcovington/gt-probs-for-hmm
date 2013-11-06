@@ -9,6 +9,7 @@ use warnings;
 use autodie;
 use feature 'say';
 use Array::Utils 'array_minus';
+use List::Util 'sum';
 
 my $min_cov = 0;
 my $min_gq  = 0;
@@ -55,6 +56,12 @@ while (<$vcf_fh>) {
             next;
         }
 
+        my @likelihoods_phred = split /,/, $pl;
+        my @likelihoods = map { 10**-( $_ / 10 ) } @likelihoods_phred;
+        my $sum_lhs = sum @likelihoods;
+
+        my @gt_probs = map { $_ / $sum_lhs } @likelihoods;
+        push @processed, join ",", @gt_probs;
     }
 
     print $out_fh $_ if exists $snps{$chr}{$pos};
