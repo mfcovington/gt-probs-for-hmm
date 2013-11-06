@@ -1,0 +1,7 @@
+*.bcf
+*.bcf.ERR
+*.vcf
+*.genotyped
+*.genotyped.nr
+polyDB.*
+*.png
