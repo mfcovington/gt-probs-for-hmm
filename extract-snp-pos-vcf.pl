@@ -37,9 +37,11 @@ open my $out_fh, ">", "2013-11-05/gt.probs";#"out.vcf";
 while (<$vcf_fh>) {
     next if /^##/;
     if (/^#/) {
+        chomp;
         $_ =~ s|../bam/(BIL_\d+)_Slc.sorted.bam|$1|g;
         $ncol = scalar split;
-        print $out_fh $_;
+        my @sample_ids = (split)[ 9 .. $ncol - 1 ];
+        say $out_fh join "\t", 'chr', 'pos', @sample_ids;
         next;
     }
     my ( $chr, $pos, $ref, $alt, @samples ) =
