@@ -5,3 +5,4 @@
 *.genotyped.nr
 polyDB.*
 *.png
+*.gt-probs
