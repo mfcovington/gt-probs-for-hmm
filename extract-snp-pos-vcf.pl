@@ -13,6 +13,7 @@ use List::Util 'sum';
 
 my ( $vcf_file, $out_file, @snp_files ) = @ARGV;
 
+my $het_alternative_calc = 1;
 my $min_cov = 1;
 my $min_gq  = 0;
 
@@ -69,10 +70,12 @@ while (<$vcf_fh>) {
         }
 
         my @likelihoods_phred = split /,/, $pl;
-        my @likelihoods = map { 10**-( $_ / 10 ) } @likelihoods_phred;
-        my $sum_lhs = sum @likelihoods;
+        my ( $ref_lh, $het_lh, $alt_lh )
+            = map { 10**-( $_ / 10 ) } @likelihoods_phred;
+        $het_lh /= 16 if $het_alternative_calc;
+        my $sum_lhs = sum $ref_lh, $het_lh, $alt_lh;
 
-        my @gt_probs = map { $_ / $sum_lhs } @likelihoods;
+        my @gt_probs = map { $_ / $sum_lhs } $ref_lh, $het_lh, $alt_lh;
         @gt_probs = reverse @gt_probs if $snps{$chr}{$pos}{$alt} eq $par1;
         push @processed, join ",", @gt_probs;
     }
