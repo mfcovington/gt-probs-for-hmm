@@ -6,6 +6,7 @@
 #
 use strict;
 use warnings;
+use Log::Reproducible;
 use autodie;
 use feature 'say';
 use Array::Utils 'array_minus';
@@ -43,7 +44,6 @@ while (<$vcf_fh>) {
     next if /^##/;
     if (/^#/) {
         chomp;
-        $_ =~ s|../bam/(BIL_\d+)_Slc.sorted.bam|$1|g;
         $ncol = scalar split;
         my @sample_ids = (split)[ 9 .. $ncol - 1 ];
         say $out_fh join "\t", 'chr', 'pos', @sample_ids;
