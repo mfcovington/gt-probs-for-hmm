@@ -54,6 +54,9 @@ while (<$vcf_fh>) {
 
     next unless exists $snps{$chr}{$pos};
 
+    # Remove ',X' from alt allele, if present (i.e., -A was used with bcftools)
+    $alt =~ s/(.+),X/$1/;
+
     # Skip INDELS and multiple alts
     next unless length "$ref$alt" == 2;
 
