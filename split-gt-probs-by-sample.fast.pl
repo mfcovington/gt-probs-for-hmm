@@ -18,7 +18,7 @@ chomp @header;
 my %samples;
 for my $index ( 2 .. $#header ) {
     my $sample_id = $header[$index];
-    open $samples{$index}{fh}, ">", "$gt_probs_file.TEST.$sample_id";
+    open $samples{$index}{fh}, ">", "$gt_probs_file.$sample_id";
     say { $samples{$index}{fh} } join "\t", $header[0], $header[1],
         $sample_id;
 }
